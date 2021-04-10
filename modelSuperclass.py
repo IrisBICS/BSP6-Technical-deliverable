@@ -24,7 +24,7 @@ class ModelSuperclass:
     def createArchitecture(self):  # Override implementation in subclass
 
         if self.verbose:
-            print("\nWarning: You are calling the superclass method implementation of __createArchitecture, but you should override this implementation in your subclass!")
+            print("\nWarning: You are calling the superclass method implementation of createArchitecture, but you should override this implementation in your subclass!")
             print("\nInitializing model architecture...")
 
         self.model = Model()
@@ -35,7 +35,7 @@ class ModelSuperclass:
     def loadData(self, path):  # Override implementation in subclass
 
         if self.verbose:
-            print("\nWarning: You are calling the superclass method implementation of __loadData, but you should override this implementation in your subclass!")
+            print("\nWarning: You are calling the superclass method implementation of loadData, but you should override this implementation in your subclass!")
             print("\nLoading data from", path, "...")
 
         self.x_training_data = []  # Data to train the model
@@ -53,7 +53,7 @@ class ModelSuperclass:
 
     def prepareModel(self, epochs, batch_size):  # Override implementation in subclass
 
-        print("\nWarning: You are calling the superclass method implementation of __prepareModel, but you should override this implementation in your subclass!")
+        print("\nWarning: You are calling the superclass method implementation of prepareModel, but you should override this implementation in your subclass!")
 
         self.epochs = epochs
         self.batch_size = batch_size
