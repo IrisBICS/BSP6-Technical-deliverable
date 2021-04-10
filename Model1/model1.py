@@ -1,33 +1,21 @@
-import os
-import csv
 import pandas as pd
 import numpy as np
+from modelSuperclass import ModelSuperclass
 #import matplotlib.pyplot as plt
-from tensorflow.keras.models import Model, model_from_json
+from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import *
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
 
-class Model1:
+class Model1(ModelSuperclass):
 
     def __init__(self, save_path, data_path, name="model1", verbose=True):
 
-        if verbose:
-            print("\nCreating model object...")
+        super().__init__(save_path, data_path, name, verbose)
 
-        self.save_path = save_path
-        self.name = name
-        self.verbose = verbose
-
-        self.__loadData(data_path)
-
-        if self.verbose:
-            print("\nModel object created successfully!")
-
-    def __createArchitecture(self):
+    def createArchitecture(self):
 
         if self.verbose:
             print("\nInitializing model architecture...")
@@ -48,7 +36,7 @@ class Model1:
         if self.verbose:
             print("Finished initializing model architecture.")
 
-    def __loadData(self, path):
+    def loadData(self, path):
 
         if self.verbose:
             print("\nLoading data from", path, "...")
@@ -97,107 +85,10 @@ class Model1:
         #plt.imshow(self.x_training_data[10000])  # Plot one of the face images to see it
         #plt.show()
 
-    def __prepareModel(self, epochs, batch_size):
+    def prepareModel(self, epochs, batch_size):
 
         self.epochs = epochs
         self.batch_size = batch_size
 
         self.callbacks = []
         self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
-
-    def train(self, epochs=10, batch_size=32, learning_rate=0.0001):
-
-        self.__createArchitecture()
-        self.__prepareModel(epochs, batch_size)
-
-        if self.verbose:
-            print("\nStarting training...")
-
-        self.optimizer = Adam(learning_rate=learning_rate)
-        self.model.compile(loss="categorical_crossentropy", optimizer=self.optimizer, metrics=["accuracy"])
-
-        self.history = self.model.fit(self.x_training_data, self.y_training_data, batch_size=self.batch_size, epochs=self.epochs, verbose=1, validation_data=(self.x_validation_data, self.y_validation_data), callbacks=self.callbacks)
-
-        if self.verbose:
-            print("Finished training.")
-
-        self.__saveModel()
-
-    def __saveModel(self):
-
-        if self.verbose:
-            print("\nSaving model to disk...")
-
-        # Save architecture
-        model_json = self.model.to_json()
-        with open(os.path.join(self.save_path, self.name + ".json"), mode="w") as json_file:
-            json_file.write(model_json)
-
-        # Save weights
-        self.model.save_weights(os.path.join(self.save_path, self.name + ".h5"))
-
-        # Save history
-        history_df = pd.DataFrame.from_dict(self.history.history)
-        with open(os.path.join(self.save_path, self.name + ".csv"), mode='w') as csv_file:
-            history_df.to_csv(csv_file)
-
-        if self.verbose:
-            print("Finished saving model to disk.")
-
-    def loadModel(self):
-
-        if self.verbose:
-            print("\nLoading model from location", self.save_path, "...")
-
-        self.model = model_from_json(open(os.path.join(self.save_path, self.name + ".json"), "r").read())
-        self.model.load_weights(os.path.join(self.save_path, self.name + '.h5'))
-
-        historyCols = []
-        with open(os.path.join(self.save_path, self.name + ".csv"), 'r') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if historyCols:
-                    for i, value in enumerate(row):
-                        historyCols[i].append(float(value))
-                else:
-                    historyCols = [[value] for value in row]
-        self.history = {c[0]: c[1:] for c in historyCols}
-
-        self.optimizer = Adam(learning_rate=self.history["lr"][-1])  # Take last lr value as lr
-        self.model.compile(loss="categorical_crossentropy", optimizer=self.optimizer, metrics=["accuracy"])
-
-        if self.verbose:
-            print("Finished loading model.")
-
-    def __evaluate(self, x, y):
-
-        loss_and_metrics = self.model.evaluate(x, y)
-        print("Loss: ", loss_and_metrics[0], "\nAccuracy: ", loss_and_metrics[1])
-
-    def evaluateOnValid(self):
-
-        if not self.model:
-            print("\nError: Please load or train the model first!")
-            return
-
-        if self.verbose:
-            print("\nEvaluating the model on the validation data...")
-
-        self.__evaluate(self.x_validation_data, self.y_validation_data)
-
-        if self.verbose:
-            print("Finished evaluating the model on the validation data.")
-
-    def evaluateOnTest(self):
-
-        if not self.model:
-            print("\nError: Please load or train the model first!")
-            return
-
-        if self.verbose:
-            print("\nEvaluating the model on the unseen testing data...")
-
-        self.__evaluate(self.x_testing_data, self.y_testing_data)
-
-        if self.verbose:
-            print("Finished evaluating the model on the unseen testing data.")
