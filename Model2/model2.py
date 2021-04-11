@@ -3,6 +3,7 @@ import numpy as np
 from modelSuperclass import ModelSuperclass
 from tensorflow.keras.layers import *
 from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
 class Model2(ModelSuperclass):
@@ -41,9 +42,8 @@ class Model2(ModelSuperclass):
         concat = concatenate(axis=1, inputs=[jaw_dense, left_brow_dense, right_brow_dense, nose_dense, right_eye_dense, left_eye_dense, mouth_dense, lips_dense])  # Layer with 8 neurons, each corresponding to one feature group
         flatten = Flatten()(concat)
 
-        # From here onwards, architecture taken from "Facial Expression Recognition using Facial Landmark Detection and Feature Extraction via Neural Networks" (F. Kahn)
-        hidden = Dense(100, activation="sigmoid")(flatten)
-        hidden = Dense(500, activation="sigmoid")(hidden)
+        hidden = Dense(256, activation="sigmoid")(flatten)
+        hidden = Dense(512, activation="sigmoid")(hidden)
         dropout = Dropout(0.3)(hidden)
         out = Dense(7, activation="sigmoid")(dropout)
 
@@ -115,8 +115,8 @@ class Model2(ModelSuperclass):
         self.batch_size = batch_size
 
         self.callbacks = []
-        # TODO: Define callbacks if any is needed - starting with no callback
+        self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
 
-    def train(self, epochs=25, batch_size=32, learning_rate=0.005):
+    def train(self, epochs=25, batch_size=32, learning_rate=0.001):
 
         super().train(epochs, batch_size, learning_rate)

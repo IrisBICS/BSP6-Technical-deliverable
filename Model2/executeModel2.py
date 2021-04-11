@@ -5,7 +5,7 @@ DATAPATH = "../FER2013/fer2013_landmarks.csv"
 NAME = "model2"
 
 model = Model2(SAVEPATH, DATAPATH, name=NAME)
-model.train()
-#model.loadModel()
+#model.train()
+model.loadModel()
 model.evaluateOnValid()
 model.evaluateOnTest()
