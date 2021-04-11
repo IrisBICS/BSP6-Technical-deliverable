@@ -34,6 +34,7 @@ class Model1(ModelSuperclass):
         self.model = Model(inputs=base_model.input, outputs=output)
 
         if self.verbose:
+            print(self.model.summary())
             print("Finished initializing model architecture.")
 
     def loadData(self, path):
@@ -92,3 +93,7 @@ class Model1(ModelSuperclass):
 
         self.callbacks = []
         self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
+
+    def train(self, epochs=10, batch_size=32, learning_rate=0.0001):
+
+        super().train(epochs, batch_size, learning_rate)

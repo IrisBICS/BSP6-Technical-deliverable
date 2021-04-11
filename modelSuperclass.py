@@ -7,7 +7,7 @@ from tensorflow.keras.models import Model, model_from_json
 
 class ModelSuperclass:
 
-    def __init__(self, save_path, data_path, name="supermodel", verbose=True):
+    def __init__(self, save_path, data_path, name, verbose=True):
 
         if verbose:
             print("\nCreating object", name)
@@ -60,7 +60,7 @@ class ModelSuperclass:
 
         self.callbacks = []
 
-    def train(self, epochs=10, batch_size=32, learning_rate=0.0001):
+    def train(self, epochs, batch_size, learning_rate):
 
         self.createArchitecture()
         self.prepareModel(epochs, batch_size)
@@ -94,7 +94,7 @@ class ModelSuperclass:
         # Save history
         history_df = pd.DataFrame.from_dict(self.history.history)
         with open(os.path.join(self.save_path, self.name + ".csv"), mode='w') as csv_file:
-            history_df.to_csv(csv_file, index=False, line_terminator='\n')
+            history_df.to_csv(csv_file, index=True, line_terminator='\n')
 
         if self.verbose:
             print("Finished saving model to disk.")
