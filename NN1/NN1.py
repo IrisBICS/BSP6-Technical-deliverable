@@ -11,9 +11,9 @@ from tensorflow.keras.utils import to_categorical
 
 class NN1(NNModel):
 
-    def __init__(self, save_path, data_path, name="model1", verbose=True):
+    def __init__(self, save_path, data_path, name="model1", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'), verbose=True):
 
-        super().__init__(save_path, data_path, name, verbose)
+        super().__init__(save_path, data_path, name, labels, verbose)
 
     def createArchitecture(self):
 

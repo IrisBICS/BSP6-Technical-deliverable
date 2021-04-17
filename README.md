@@ -21,3 +21,4 @@ Please find the neural networks trained with the code of this repository [here](
   1. Training and validation accuracy
   2. Training and validation loss
   3. Learning rate
+  4. Confusion matrices for training, validation and testing data

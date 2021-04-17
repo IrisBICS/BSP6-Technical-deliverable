@@ -1,20 +1,24 @@
 import os
 import csv
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model, model_from_json
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 class NNModel:
 
-    def __init__(self, save_path, data_path, name, verbose=True):
+    def __init__(self, save_path, data_path, name, labels, verbose=True):
 
         if verbose:
             print("\nCreating object", name)
 
         self.save_path = save_path
         self.name = name
+        self.labels = labels
         self.verbose = verbose
 
         self.loadData(data_path)
@@ -158,6 +162,58 @@ class NNModel:
         if self.verbose:
             print("Finished evaluating the model on the unseen testing data.")
 
+    def __confusionMatrix(self, x, y, dtype, percentage=False, save=True, show=True, report=False):
+
+        y_pred = self.model.predict(x)
+        y_pred = np.argmax(y_pred, axis=1)
+        y_true = np.argmax(y, axis=1)
+
+        fig, ax = plt.subplots(figsize=(7, 7))
+        conf_matrix = confusion_matrix(y_true, y_pred, labels=np.arange(len(self.labels)))
+
+        if percentage:
+            conf_matrix = conf_matrix / np.sum(conf_matrix, axis=None)
+            fmt = "0.2%"
+        else:
+            fmt = "1"
+
+        sns.heatmap(conf_matrix, annot=True, annot_kws={"size":12}, fmt=fmt, square=True, cmap=plt.cm.get_cmap(), cbar=False, xticklabels=self.labels, yticklabels=self.labels, ax=ax)
+        ax.set_ylabel('Actual')
+        ax.set_xlabel('Predicted')
+        ax.set_title('Confusion Matrix for ' + self.name + ' ' + dtype + ' data')
+        if save:
+            plt.savefig(os.path.join(self.save_path, "plots/", self.name + "_cm_" + dtype + ".png"))
+        if show:
+            plt.show()
+
+        if report:
+            print('Classification Report for', self.name, "with", dtype, "data:")
+            print(classification_report(y_true, y_pred, labels=np.arange(len(self.labels)), target_names=self.labels))
+
+    def generateConfusionMatrices(self, percentage=True, save=True, show=True, report=False):
+
+        if not self.model:
+            print("\nError: Please load or train the model first!")
+            return
+
+        if self.verbose:
+            print("\nGenerating the confusion matrix for the training data...")
+
+        self.__confusionMatrix(self.x_training_data, self.y_training_data, "training", percentage=percentage, save=save, show=show, report=report)
+
+        if self.verbose:
+            print("Generating the confusion matrix for the validation data...")
+
+        self.__confusionMatrix(self.x_validation_data, self.y_validation_data, "validation", percentage=percentage, save=save, show=show, report=report)
+
+        if self.verbose:
+            print("Generating the confusion matrix for the testing data...")
+
+        self.__confusionMatrix(self.x_testing_data, self.y_testing_data, "testing", percentage=percentage, save=save, show=show, report=report)
+
+        if self.verbose:
+            print("Finished generating the confusion matrices.")
+
     def generatePlots(self, accuracy=True, loss=True, learning_rate=True, save=True, show=True):
 
         if not self.history:
@@ -171,7 +227,7 @@ class NNModel:
         lr = self.history['lr']
         epochs = range(len(tr_acc))
 
-        save = os.path.join(self.save_path, "plots/", self.name)
+        save_prefix = os.path.join(self.save_path, "plots/", self.name)
 
         # Accuracy
         if accuracy:
@@ -181,7 +237,7 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save + "_accuracy.png")
+                plt.savefig(save_prefix + "_accuracy.png")
             if show:
                 plt.show()
 
@@ -193,7 +249,7 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save + "_loss.png")
+                plt.savefig(save_prefix + "_loss.png")
             if show:
                 plt.show()
 
@@ -204,6 +260,6 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save + "_lr.png")
+                plt.savefig(save_prefix + "_lr.png")
             if show:
                 plt.show()
