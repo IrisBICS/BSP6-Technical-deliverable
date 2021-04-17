@@ -12,11 +12,11 @@ This repository contains the code of the technical deliverable of my 6th Bachelo
 
 ## Trained models
 
-Please find the models trained with the code of this repository [here](https://drive.google.com/drive/folders/1tRyeVec0-Ih8gHUIzojiWgUEJAR2AM6l?usp=sharing). For each model:
+Please find the neural networks trained with the code of this repository [here](https://drive.google.com/drive/folders/1tRyeVec0-Ih8gHUIzojiWgUEJAR2AM6l?usp=sharing). For each model:
 
-* The JSON file contains the model's architecture.
-* The h5 file contains the model's weights.
-* The csv file contains the model's training history.
+* The JSON file contains the architecture.
+* The h5 file contains the weights.
+* The csv file contains the training history.
 * The plots folder contains the plots of:
   1. Training and validation accuracy
   2. Training and validation loss

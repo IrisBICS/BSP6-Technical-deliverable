@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model, model_from_json
 
 
-class ModelSuperclass:
+class NNModel:
 
     def __init__(self, save_path, data_path, name, verbose=True):
 

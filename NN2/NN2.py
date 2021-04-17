@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
-from modelSuperclass import ModelSuperclass
+from Models.NNModel import NNModel
 from tensorflow.keras.layers import *
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
-class Model2(ModelSuperclass):
+class NN2(NNModel):
 
     def __init__(self, save_path, data_path, name="model2", verbose=True):
 

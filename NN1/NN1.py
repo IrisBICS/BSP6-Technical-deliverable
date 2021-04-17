@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from modelSuperclass import ModelSuperclass
+from Models.NNModel import NNModel
 #import matplotlib.pyplot as plt
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
 
-class Model1(ModelSuperclass):
+class NN1(NNModel):
 
     def __init__(self, save_path, data_path, name="model1", verbose=True):
 
