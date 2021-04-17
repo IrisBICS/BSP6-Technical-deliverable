@@ -1,6 +1,7 @@
 import os
 import csv
 import pandas as pd
+import matplotlib.pyplot as plt
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model, model_from_json
 
@@ -156,3 +157,53 @@ class ModelSuperclass:
 
         if self.verbose:
             print("Finished evaluating the model on the unseen testing data.")
+
+    def generatePlots(self, accuracy=True, loss=True, learning_rate=True, save=True, show=True):
+
+        if not self.history:
+            print("\nError: Please load or train the model first!")
+            return
+
+        tr_acc = self.history['accuracy']
+        val_acc = self.history['val_accuracy']
+        tr_loss = self.history['loss']
+        val_loss = self.history['val_loss']
+        lr = self.history['lr']
+        epochs = range(len(tr_acc))
+
+        save = os.path.join(self.save_path, "plots/", self.name)
+
+        # Accuracy
+        if accuracy:
+            plt.plot(epochs, tr_acc, 'r-', label='Training Accuracy')
+            plt.plot(epochs, val_acc, 'b--', label='Validation Accuracy')
+            plt.title('Training and Validation Accuracy of ' + self.name)
+            plt.legend(loc='best')
+
+            if save:
+                plt.savefig(save + "_accuracy.png")
+            if show:
+                plt.show()
+
+        # Loss
+        if loss:
+            plt.plot(epochs, tr_loss, 'r-', label='Training Loss')
+            plt.plot(epochs, val_loss, 'b--', label='Validation Loss')
+            plt.title('Training and Validation Loss of ' + self.name)
+            plt.legend(loc='best')
+
+            if save:
+                plt.savefig(save + "_loss.png")
+            if show:
+                plt.show()
+
+        # Learning rate
+        if learning_rate:
+            plt.plot(epochs, lr, 'r-', label='Learning rate')
+            plt.title('Learning rate over training time of ' + self.name)
+            plt.legend(loc='best')
+
+            if save:
+                plt.savefig(save + "_lr.png")
+            if show:
+                plt.show()

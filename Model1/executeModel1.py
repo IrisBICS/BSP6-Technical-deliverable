@@ -7,5 +7,6 @@ NAME = "model1"
 model = Model1(SAVEPATH, DATAPATH, name=NAME)
 #model.train()
 model.loadModel()
-model.evaluateOnValid()
-model.evaluateOnTest()
+#model.evaluateOnValid()
+#model.evaluateOnTest()
+model.generatePlots()

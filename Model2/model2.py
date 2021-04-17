@@ -41,10 +41,12 @@ class Model2(ModelSuperclass):
 
         concat = concatenate(axis=1, inputs=[jaw_dense, left_brow_dense, right_brow_dense, nose_dense, right_eye_dense, left_eye_dense, mouth_dense, lips_dense])  # Layer with 8 neurons, each corresponding to one feature group
         flatten = Flatten()(concat)
+        hidden = BatchNormalization()(flatten)
 
-        hidden = Dense(256, activation="sigmoid")(flatten)
+        hidden = Dense(256, activation="sigmoid")(hidden)
         hidden = Dense(512, activation="sigmoid")(hidden)
-        dropout = Dropout(0.3)(hidden)
+        hidden = Dense(64, activation="sigmoid")(hidden)
+        dropout = Dropout(0.2)(hidden)
         out = Dense(7, activation="sigmoid")(dropout)
 
         self.model = Model(inputs=inp, outputs=out)
@@ -117,6 +119,6 @@ class Model2(ModelSuperclass):
         self.callbacks = []
         self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
 
-    def train(self, epochs=25, batch_size=32, learning_rate=0.001):
+    def train(self, epochs=32, batch_size=32, learning_rate=0.001):
 
         super().train(epochs, batch_size, learning_rate)

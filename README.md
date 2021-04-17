@@ -2,13 +2,13 @@
 
 This repository contains the code of the technical deliverable of my 6th Bachelor Semester Project.
 
-## Datasets
+## Datasets used
 
 * [FER2013](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
 
 ## External models used
 
-* [shape_predictor_68_face_landmarks](https://github.com/davisking/dlib-models/blob/master/shape_predictor_68_face_landmarks.dat.bz2)
+* [shape_predictor_68_face_landmarks](https://github.com/davisking/dlib-models/blob/master/shape_predictor_68_face_landmarks.dat.bz2) to extract the facial landmarks of the FER2013 images
 
 ## Trained models
 
@@ -17,3 +17,7 @@ Please find the models trained with the code of this repository [here](https://d
 * The JSON file contains the model's architecture.
 * The h5 file contains the model's weights.
 * The csv file contains the model's training history.
+* The plots folder contains the plots of:
+  1. Training and validation accuracy
+  2. Training and validation loss
+  3. Learning rate
