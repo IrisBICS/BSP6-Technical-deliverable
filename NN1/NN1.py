@@ -11,9 +11,9 @@ from tensorflow.keras.utils import to_categorical
 
 class NN1(NNModel):
 
-    def __init__(self, save_path, data_path, name="model1", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'), verbose=True):
+    def __init__(self, save_path, data_path, name="NN1", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'), seed=0, verbose=True):
 
-        super().__init__(save_path, data_path, name, labels, verbose)
+        super().__init__(save_path, data_path, name, labels, seed, verbose)
 
     def createArchitecture(self):
 
@@ -37,7 +37,7 @@ class NN1(NNModel):
             print(self.model.summary())
             print("Finished initializing model architecture.")
 
-    def loadData(self, path):
+    def loadData(self, path, seed=0):
 
         if self.verbose:
             print("\nLoading data from", path, "...")
@@ -45,7 +45,7 @@ class NN1(NNModel):
         # Extracting data from csv
         emotion_data = pd.read_csv(path, sep=r'\s*,\s*', engine='python')
         emotion_data.drop(columns=['Usage'])  # I am partitioning the data usage myself
-        emotion_data = emotion_data.sample(frac=1, random_state=0).reset_index(drop=True)  # Shuffling data, seeded
+        emotion_data = emotion_data.sample(frac=1, random_state=seed).reset_index(drop=True)  # Shuffling data, seeded
 
         all_data = []
         all_labels = []

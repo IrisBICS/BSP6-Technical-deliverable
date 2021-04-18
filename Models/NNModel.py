@@ -11,7 +11,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 class NNModel:
 
-    def __init__(self, save_path, data_path, name, labels, verbose=True):
+    def __init__(self, save_path, data_path, name, labels, seed=0, verbose=True):
 
         if verbose:
             print("\nCreating object", name)
@@ -21,10 +21,10 @@ class NNModel:
         self.labels = labels
         self.verbose = verbose
 
-        self.loadData(data_path)
+        self.loadData(data_path, seed=seed)
 
         if self.verbose:
-            print("\nModel object created successfully!")
+            print("\n" + self.name, "object created successfully!")
 
     def createArchitecture(self):  # Override implementation in subclass
 
@@ -37,7 +37,7 @@ class NNModel:
         if self.verbose:
             print("Finished initializing model architecture.")
 
-    def loadData(self, path):  # Override implementation in subclass
+    def loadData(self, path, seed=0):  # Override implementation in subclass
 
         if self.verbose:
             print("\nWarning: You are calling the superclass method implementation of loadData, but you should override this implementation in your subclass!")
