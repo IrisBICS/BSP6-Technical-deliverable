@@ -1,6 +1,6 @@
 from NN1 import NN1
 
-SAVEPATH = "../SavedNNs/NN1/"
+SAVEPATH = "../SavedNNs/NN1New/"
 DATAPATH = "../FER2013/icml_face_data.csv"
 NAME = "NN1"
 
@@ -9,5 +9,5 @@ model = NN1(SAVEPATH, DATAPATH, name=NAME)
 model.loadModel()
 #model.evaluateOnValid()
 #model.evaluateOnTest()
-#model.generatePlots()
+model.generatePlots()
 model.generateConfusionMatrices()

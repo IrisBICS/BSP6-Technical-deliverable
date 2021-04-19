@@ -220,6 +220,9 @@ class NNModel:
             print("\nError: Please load or train the model first!")
             return
 
+        if self.verbose:
+            print("\nGenerating the plots...")
+
         tr_acc = self.history['accuracy']
         val_acc = self.history['val_accuracy']
         tr_loss = self.history['loss']
@@ -263,3 +266,6 @@ class NNModel:
                 plt.savefig(save_prefix + "_lr.png")
             if show:
                 plt.show()
+
+        if self.verbose:
+            print("Finished generating the plots.")

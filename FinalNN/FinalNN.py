@@ -1,3 +1,5 @@
+import os
+import matplotlib.pyplot as plt
 from Models.NNModel import NNModel
 from NN1.NN1 import NN1
 from NN2.NN2 import NN2
@@ -76,6 +78,57 @@ class FinalNN(NNModel):
 
         self.callbacks = []
 
-    def train(self, epochs=10, batch_size=32, learning_rate=0.001):
+    def train(self, epochs=25, batch_size=32, learning_rate=0.0005):
 
         super().train(epochs, batch_size, learning_rate)
+
+    def generatePlots(self, accuracy=True, loss=True, learning_rate=True, save=True, show=True):
+
+        if not self.history:
+            print("\nError: Please load or train the model first!")
+            return
+
+        super().generatePlots()
+
+        if self.verbose:
+            print("\nGenerating comparison plots to individual models...")
+
+        save_prefix = os.path.join(self.save_path, "plots/", self.name)
+
+        val_acc = self.history['val_accuracy']
+        img_val_acc = self.NNImages.history['val_accuracy']
+        lmk_val_acc = self.NNLandmarks.history['val_accuracy']
+        val_loss = self.history['val_loss']
+        img_val_loss = self.NNImages.history['val_loss']
+        lmk_val_loss = self.NNLandmarks.history['val_loss']
+
+        epochs = range(len(val_acc))
+        epochs_img = range(len(img_val_acc))
+        epochs_lmk = range(len(lmk_val_acc))
+
+        if accuracy:
+            plt.plot(epochs, val_acc, 'r-', label='Final model')
+            plt.plot(epochs_img, img_val_acc, 'b-', label='Images submodel')
+            plt.plot(epochs_lmk, lmk_val_acc, 'g-', label='Landmarks submodel')
+            plt.title('Validation Accuracy of final model and its submodels')
+            plt.legend(loc='best')
+
+            if save:
+                plt.savefig(save_prefix + "_accuracy_comparison.png")
+            if show:
+                plt.show()
+
+        if loss:
+            plt.plot(epochs, val_loss, 'r-', label='Final model')
+            plt.plot(epochs_img, img_val_loss, 'b-', label='Images submodel')
+            plt.plot(epochs_lmk, lmk_val_loss, 'g-', label='Landmarks submodel')
+            plt.title('Validation Loss of final model and its submodels')
+            plt.legend(loc='best')
+
+            if save:
+                plt.savefig(save_prefix + "_loss_comparison.png")
+            if show:
+                plt.show()
+
+        if self.verbose:
+            print("Finished generating the comparison plots.")

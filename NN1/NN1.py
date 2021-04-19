@@ -20,18 +20,35 @@ class NN1(NNModel):
         if self.verbose:
             print("\nInitializing model architecture...")
 
-        base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(48, 48, 3))
-        base_model.trainable = True
+        inp = Input((48, 48, 1))
 
-        X = base_model.output
-        X = Flatten()(X)
-        X = Dense(64, kernel_initializer='he_uniform')(X)
-        X = BatchNormalization()(X)
-        X = Activation('relu')(X)
+        hidden = Conv2D(16, 2, activation='relu')(inp)
+        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = Conv2D(32, 2, activation='relu')(hidden)
+        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = Conv2D(64, 2, activation='relu')(hidden)
+        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = Conv2D(64, 2, activation='relu')(hidden)
+        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = Flatten()(hidden)
+        hidden = Dense(1024, activation='relu')(hidden)
 
-        output = Dense(7, activation='softmax')(X)
+        out = Dense(7, activation='sigmoid')(hidden)
 
-        self.model = Model(inputs=base_model.input, outputs=output)
+        self.model = Model(inputs=inp, outputs=out)
+
+        #base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(48, 48, 3))
+        #base_model.trainable = True
+
+        #X = base_model.output
+        #X = Flatten()(X)
+        #X = Dense(64, kernel_initializer='he_uniform')(X)
+        #X = BatchNormalization()(X)
+        #X = Activation('relu')(X)
+
+        #output = Dense(7, activation='softmax')(X)
+
+        #self.model = Model(inputs=base_model.input, outputs=output)
 
         if self.verbose:
             print(self.model.summary())
@@ -60,7 +77,7 @@ class NN1(NNModel):
         all_labels = np.array(all_labels)
 
         all_data = all_data.reshape((all_data.shape[0], 48, 48))
-        all_data = np.stack((all_data, all_data, all_data), axis=-1)
+        #all_data = np.stack((all_data, all_data, all_data), axis=-1)
 
         all_labels = to_categorical(all_labels, num_classes=7)
 
@@ -94,6 +111,6 @@ class NN1(NNModel):
         self.callbacks = []
         self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
 
-    def train(self, epochs=10, batch_size=32, learning_rate=0.0001):
+    def train(self, epochs=14, batch_size=32, learning_rate=0.0001):
 
         super().train(epochs, batch_size, learning_rate)
