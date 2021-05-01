@@ -9,7 +9,7 @@ from tensorflow.keras.layers import *
 
 class FinalNN(NNModel):
 
-    def __init__(self, save_path, images_path, landmarks_path, NNImages_path, NNLandmarks_path, NNImages_name,
+    def __init__(self, save_path, images_path, landmarks_path, weights_path, NNImages_path, NNLandmarks_path, NNImages_name,
                  NNLandmarks_name, name="FinalNN", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'),
                  seed=0, verbose=True):
 
@@ -18,6 +18,7 @@ class FinalNN(NNModel):
 
         self.images_path = images_path
         self.landmarks_path = landmarks_path
+        self.weights_path = weights_path
         self.NNImages_path = NNImages_path
         self.NNLandmarks_path = NNLandmarks_path
         self.NNImages_name = NNImages_name
@@ -26,8 +27,8 @@ class FinalNN(NNModel):
         if verbose:
             print("\nInstantiating submodels...")
 
-        self.NNImages = NN1(self.NNImages_path, self.images_path, name=self.NNImages_name, seed=seed)
-        self.NNLandmarks = NN2(self.NNLandmarks_path, self.landmarks_path, name=self.NNLandmarks_name, seed=seed)
+        self.NNImages = NN1(self.NNImages_path, self.images_path, self.weights_path, name=self.NNImages_name, seed=seed)
+        self.NNLandmarks = NN2(self.NNLandmarks_path, self.landmarks_path, self.weights_path, name=self.NNLandmarks_name, seed=seed)
 
         self.NNImages.loadModel()
         self.NNLandmarks.loadModel()
@@ -38,7 +39,7 @@ class FinalNN(NNModel):
         if verbose:
             print("\nFinished instantiating submodels.")
 
-        super().__init__(save_path, None, name, labels, seed, verbose)
+        super().__init__(save_path, None, self.weights_path, name, labels, seed, verbose)
 
         if self.verbose:
             print("\n" + self.name, "object created successfully!")
@@ -88,7 +89,7 @@ class FinalNN(NNModel):
             print("\nError: Please load or train the model first!")
             return
 
-        super().generatePlots()
+        super().generatePlots(learning_rate=False)
 
         if self.verbose:
             print("\nGenerating comparison plots to individual models...")

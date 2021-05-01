@@ -8,9 +8,9 @@ from tensorflow.keras.utils import to_categorical
 
 class NN2(NNModel):
 
-    def __init__(self, save_path, data_path, name="NN2", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'), seed=0, verbose=True):
+    def __init__(self, save_path, data_path, weights_path, name="NN2", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'), seed=0, verbose=True):
 
-        super().__init__(save_path, data_path, name, labels, seed, verbose)
+        super().__init__(save_path, data_path, weights_path, name, labels, seed, verbose)
 
     def createArchitecture(self):
 

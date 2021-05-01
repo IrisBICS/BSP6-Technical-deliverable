@@ -7,6 +7,7 @@ import numpy as np
 DATAPATH = "../FER2013/icml_face_data.csv"
 DETECTOR = dlib.get_frontal_face_detector()
 PREDICTOR = dlib.shape_predictor("../dlibModels/shape_predictor_68_face_landmarks.dat")
+LANDMARKSPATH = "../FER2013/fer2013_landmarks.csv"
 
 
 def getImageAtIndex(data, i=0):
@@ -71,4 +72,4 @@ def generateLandmarksCsv(name):
     with open(name, mode='w') as csv_file:
         df.to_csv(csv_file, index=False, line_terminator='\n')
 
-generateLandmarksCsv("../FER2013/fer2013_landmarks.csv")
+#generateLandmarksCsv(LANDMARKSPATH)
