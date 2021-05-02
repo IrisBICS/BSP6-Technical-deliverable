@@ -29,15 +29,15 @@ class NN2(NNModel):
         mouth_inp = Lambda(lambda x: x[:, 48:61])(inp)
         lips_inp = Lambda(lambda x: x[:, 61:])(inp)
 
-        # Process each feature group with 2 neurons, independently from the other feature groups
-        jaw_dense = Dense(2, activation="sigmoid")(jaw_inp)
-        left_brow_dense = Dense(2, activation="sigmoid")(left_brow_inp)
-        right_brow_dense = Dense(2, activation="sigmoid")(right_brow_inp)
-        nose_dense = Dense(2, activation="sigmoid")(nose_inp)
-        right_eye_dense = Dense(2, activation="sigmoid")(right_eye_inp)
-        left_eye_dense = Dense(2, activation="sigmoid")(left_eye_inp)
-        mouth_dense = Dense(2, activation="sigmoid")(mouth_inp)
-        lips_dense = Dense(2, activation="sigmoid")(lips_inp)
+        # Process each feature group with 4 neurons, independently from the other feature groups
+        jaw_dense = Dense(4, activation="sigmoid")(jaw_inp)
+        left_brow_dense = Dense(4, activation="sigmoid")(left_brow_inp)
+        right_brow_dense = Dense(4, activation="sigmoid")(right_brow_inp)
+        nose_dense = Dense(4, activation="sigmoid")(nose_inp)
+        right_eye_dense = Dense(4, activation="sigmoid")(right_eye_inp)
+        left_eye_dense = Dense(4, activation="sigmoid")(left_eye_inp)
+        mouth_dense = Dense(4, activation="sigmoid")(mouth_inp)
+        lips_dense = Dense(4, activation="sigmoid")(lips_inp)
 
         concat = concatenate(axis=1, inputs=[jaw_dense, left_brow_dense, right_brow_dense, nose_dense, right_eye_dense, left_eye_dense, mouth_dense, lips_dense])  # Layer with 8 neurons, each corresponding to one feature group
         flatten = Flatten()(concat)
@@ -45,9 +45,9 @@ class NN2(NNModel):
 
         hidden = Dense(256, activation="sigmoid")(hidden)
         hidden = Dense(512, activation="sigmoid")(hidden)
-        hidden = Dense(64, activation="sigmoid")(hidden)
+        hidden = Dense(16, activation="sigmoid")(hidden)
         dropout = Dropout(0.2)(hidden)
-        out = Dense(7, activation="sigmoid")(dropout)
+        out = Dense(7, activation="softmax")(dropout)
 
         self.model = Model(inputs=inp, outputs=out)
 
@@ -119,6 +119,6 @@ class NN2(NNModel):
         self.callbacks = []
         self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
 
-    def train(self, epochs=32, batch_size=32, learning_rate=0.001):
+    def train(self, epochs=16, batch_size=32, learning_rate=0.001):
 
         super().train(epochs, batch_size, learning_rate)

@@ -5,12 +5,14 @@ DATAPATH = "../FER2013/fer2013_landmarks.csv"
 WEIGHTSPATH = "../FER2013/fer2013_weights.csv"
 NAME = "NN2"
 
+EPOCHS = 16
+
 model = NN2(SAVEPATH, DATAPATH, WEIGHTSPATH, name=NAME)
-#model.train()
+#model.train(epochs=EPOCHS)
 model.loadModel()
-#model.evaluateOnValid()
-#model.evaluateOnTest()
-#model.generatePlots()
+model.evaluateOnValid()
+model.evaluateOnTest()
+model.generatePlots()
 model.generateConfusionMatrices()
 model.generateConfusionMatrices(percentage=False)
 model.generateConfusionMatrices(normalize=True)

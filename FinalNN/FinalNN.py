@@ -11,7 +11,7 @@ class FinalNN(NNModel):
 
     def __init__(self, save_path, images_path, landmarks_path, weights_path, NNImages_path, NNLandmarks_path, NNImages_name,
                  NNLandmarks_name, name="FinalNN", labels=('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'),
-                 seed=0, verbose=True):
+                 combine_mode="decisions", trainable=False, seed=0, verbose=True):
 
         if verbose:
             print("\nCreating object", name)
@@ -23,6 +23,7 @@ class FinalNN(NNModel):
         self.NNLandmarks_path = NNLandmarks_path
         self.NNImages_name = NNImages_name
         self.NNLandmarks_name = NNLandmarks_name
+        self.combine_mode = combine_mode
 
         if verbose:
             print("\nInstantiating submodels...")
@@ -33,8 +34,8 @@ class FinalNN(NNModel):
         self.NNImages.loadModel()
         self.NNLandmarks.loadModel()
 
-        self.NNImages.model.trainable = False
-        self.NNLandmarks.model.trainable = False
+        self.NNImages.model.trainable = trainable
+        self.NNLandmarks.model.trainable = trainable
 
         if verbose:
             print("\nFinished instantiating submodels.")
@@ -54,7 +55,13 @@ class FinalNN(NNModel):
         for layer in self.NNLandmarks.model.layers:
             layer._name = "landmarks_" + layer._name
 
-        combined_out = concatenate([self.NNImages.model.output, self.NNLandmarks.model.output])
+        if self.combine_mode == "features":  # Model will process the features extracted by each model to make a final decision
+            combined_out = concatenate([self.NNImages.model.layers[-2].output, self.NNLandmarks.model.layers[-2].output])
+            combined_out = Dense(64)(combined_out)
+            combined_out = Dense(16)(combined_out)
+        else:  # By default, the model combines the decisions
+            combined_out = concatenate([self.NNImages.model.output, self.NNLandmarks.model.output])
+
         out = Dense(7, activation='softmax')(combined_out)
 
         self.model = Model(inputs=[self.NNImages.model.input, self.NNLandmarks.model.input], outputs=out)
@@ -79,7 +86,7 @@ class FinalNN(NNModel):
 
         self.callbacks = []
 
-    def train(self, epochs=25, batch_size=32, learning_rate=0.0005):
+    def train(self, epochs=16, batch_size=32, learning_rate=0.00005):
 
         super().train(epochs, batch_size, learning_rate)
 

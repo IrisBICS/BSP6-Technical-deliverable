@@ -5,7 +5,7 @@ from Models.NNModel import NNModel
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import *
-from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.callbacks import ReduceLROnPlateau, LearningRateScheduler
 from tensorflow.keras.utils import to_categorical
 
 
@@ -23,17 +23,16 @@ class NN1(NNModel):
         inp = Input((48, 48, 1))
 
         hidden = Conv2D(16, 2, activation='relu')(inp)
-        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = MaxPooling2D(2, 1)(hidden)
         hidden = Conv2D(32, 2, activation='relu')(hidden)
         hidden = MaxPooling2D(2, 2)(hidden)
         hidden = Conv2D(64, 2, activation='relu')(hidden)
-        hidden = MaxPooling2D(2, 2)(hidden)
-        hidden = Conv2D(64, 2, activation='relu')(hidden)
-        hidden = MaxPooling2D(2, 2)(hidden)
+        hidden = MaxPooling2D(2, 1)(hidden)
         hidden = Flatten()(hidden)
-        hidden = Dense(1024, activation='relu')(hidden)
+        hidden = Dense(512, activation='relu')(hidden)
+        hidden = Dense(16, activation='sigmoid')(hidden)
 
-        out = Dense(7, activation='sigmoid')(hidden)
+        out = Dense(7, activation='softmax')(hidden)
 
         self.model = Model(inputs=inp, outputs=out)
 
@@ -105,12 +104,19 @@ class NN1(NNModel):
 
     def prepareModel(self, epochs, batch_size):
 
+        def scheduler(epoch, lr):
+            if epoch == 10:
+                return lr * 0.2
+            else:
+                return lr
+
         self.epochs = epochs
         self.batch_size = batch_size
 
         self.callbacks = []
-        self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, verbose=1, mode='auto'))
+        #self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=4, verbose=1, mode='auto'))
+        self.callbacks.append(LearningRateScheduler(scheduler))
 
-    def train(self, epochs=14, batch_size=32, learning_rate=0.0001):
+    def train(self, epochs=16, batch_size=32, learning_rate=0.0001):
 
         super().train(epochs, batch_size, learning_rate)
