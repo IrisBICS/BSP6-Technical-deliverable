@@ -36,19 +36,6 @@ class NN1(NNModel):
 
         self.model = Model(inputs=inp, outputs=out)
 
-        #base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(48, 48, 3))
-        #base_model.trainable = True
-
-        #X = base_model.output
-        #X = Flatten()(X)
-        #X = Dense(64, kernel_initializer='he_uniform')(X)
-        #X = BatchNormalization()(X)
-        #X = Activation('relu')(X)
-
-        #output = Dense(7, activation='softmax')(X)
-
-        #self.model = Model(inputs=base_model.input, outputs=output)
-
         if self.verbose:
             print(self.model.summary())
             print("Finished initializing model architecture.")
