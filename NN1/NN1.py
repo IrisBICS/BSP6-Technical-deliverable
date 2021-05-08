@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
 from Models.NNModel import NNModel
-#import matplotlib.pyplot as plt
 from tensorflow.keras.models import Model
-from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import *
-from tensorflow.keras.callbacks import ReduceLROnPlateau, LearningRateScheduler
+from tensorflow.keras.callbacks import LearningRateScheduler
 from tensorflow.keras.utils import to_categorical
 
 
@@ -63,7 +61,6 @@ class NN1(NNModel):
         all_labels = np.array(all_labels)
 
         all_data = all_data.reshape((all_data.shape[0], 48, 48))
-        #all_data = np.stack((all_data, all_data, all_data), axis=-1)
 
         all_labels = to_categorical(all_labels, num_classes=7)
 
@@ -101,7 +98,6 @@ class NN1(NNModel):
         self.batch_size = batch_size
 
         self.callbacks = []
-        #self.callbacks.append(ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=4, verbose=1, mode='auto'))
         self.callbacks.append(LearningRateScheduler(scheduler))
 
     def train(self, epochs=16, batch_size=32, learning_rate=0.0001):
