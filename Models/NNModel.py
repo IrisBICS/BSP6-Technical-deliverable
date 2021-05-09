@@ -207,7 +207,7 @@ class NNModel:
             else:
                 part += "abs_"
             name = os.path.join(self.save_path, "plots/", self.name + part + dtype + ".png")
-            plt.savefig(name)
+            plt.savefig(name, bbox_inches='tight')
         if show:
             plt.show()
 
@@ -264,7 +264,7 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save_prefix + "_accuracy.png")
+                plt.savefig(save_prefix + "_accuracy.png", bbox_inches='tight')
             if show:
                 plt.show()
 
@@ -276,7 +276,7 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save_prefix + "_loss.png")
+                plt.savefig(save_prefix + "_loss.png", bbox_inches='tight')
             if show:
                 plt.show()
 
@@ -288,7 +288,7 @@ class NNModel:
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save_prefix + "_lr.png")
+                plt.savefig(save_prefix + "_lr.png", bbox_inches='tight')
             if show:
                 plt.show()
 

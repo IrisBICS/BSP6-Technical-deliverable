@@ -122,7 +122,7 @@ class FinalNN(NNModel):
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save_prefix + "_accuracy_comparison.png")
+                plt.savefig(save_prefix + "_accuracy_comparison.png", bbox_inches='tight')
             if show:
                 plt.show()
 
@@ -134,7 +134,7 @@ class FinalNN(NNModel):
             plt.legend(loc='best')
 
             if save:
-                plt.savefig(save_prefix + "_loss_comparison.png")
+                plt.savefig(save_prefix + "_loss_comparison.png", bbox_inches='tight')
             if show:
                 plt.show()
 
